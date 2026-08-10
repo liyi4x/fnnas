@@ -24,7 +24,7 @@ on:
       fnnas_board:
         description: "Select fnnas device board"
         required: false
-        default: "rockchip50"
+        default: "elfboard-elf2"
         type: choice
         options:
           - allwinner
@@ -253,10 +253,11 @@ on:
       kernel_repo:
         description: "Set fnnas kernel repository"
         required: false
-        default: "ophub/fnnas"
+        default: "liyi4x/fnnas"
         type: choice
         options:
           - ophub/fnnas
+          - liyi4x/fnnas
       fnnas_kernel:
         description: "Select fnnas kernel version"
         required: false
@@ -448,15 +449,29 @@ jobs:
           [[ "${?}" -ne "0" ]] && echo "Error: Download failed." && exit 1
 
           # Create directory symlinks for packaging
+
+          echo ================1==============
+          ls /builder/fnnas
+          echo ================11==============
+          ls /home/runner/work -alR
+          echo ================11=2=============
+          ls ${{ github.workspace }}
+          echo ================12======${{ github.workspace }}========
+          ls ${{ github.workspace }}/fnnas
+          echo ================1=3=============
+          ls /home/runner/work/_actions -R
+          echo ================1==4============
           ln -sf /builder/fnnas ${{ github.workspace }}/fnnas
-          ln -sf /builder/fnnas /home/runner/work/_actions/ophub/fnnas/main/fnnas
+          echo ================1===5===========
+          ln -sf /builder/fnnas /home/runner/work/_actions/liyi4x/fnnas/main/fnnas
+          echo ================1====6==========
 
           echo "build_tag=${build_tag}" >> ${GITHUB_ENV}
           echo "status=success" >> ${GITHUB_OUTPUT}
 
       - name: Package FnNAS for target boards
         if: ${{ steps.down.outputs.status == 'success' && !cancelled() }}
-        uses: ophub/fnnas@main
+        uses: liyi4x/fnnas@main
         with:
           fnnas_path: fnnas/*.img.xz
           fnnas_board: ${{ inputs.fnnas_board }}

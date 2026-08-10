@@ -335,6 +335,7 @@ check_data() {
         # Deduplicate while preserving order so [ -b s905x_s905x ] doesn't build twice.
         make_fnnas=($(echo ${make_board} | tr '_' '\n' | awk 'NF && !seen[$0]++'))
     fi
+    process_msg "=====board_list=${board_list}"
     [[ "${#make_fnnas[@]}" -eq 0 ]] && error_msg "The [ BOARD ] is missing, stop making."
 
     # Get the kernel array from the model configuration file
@@ -343,6 +344,7 @@ check_data() {
             grep -E "^.*${board_list}$" | awk -F':' '{print $9}' |
             sort -u | xargs
     ))
+    process_msg "=====kernel_from=${kernel_from}"
     [[ "${#kernel_from[@]}" -eq 0 ]] && error_msg "Missing [ KERNEL_TAGS ] settings, stop building."
 
     # Convert the kernel_from to the kernel array
@@ -1232,7 +1234,7 @@ loop_make() {
 echo -e "${STEPS} Welcome to the FnNAS image builder!"
 echo -e "${INFO} Server running on Ubuntu: [ Release: ${host_release} / Host: ${arch_info} ] \n"
 # Check script permission
-[[ "$(id -u)" == 0 ]] || error_msg "Please run this script as root: [ sudo ./${0} ]"
+# [[ "$(id -u)" == 0 ]] || error_msg "Please run this script as root: [ sudo ./${0} ]"
 
 # Initialize variables and download the kernel
 init_var "${@}"
@@ -1258,3 +1260,7 @@ loop_make
 # Show server space usage after build
 echo -e "${STEPS} Server space usage after building: \n$(df -hT ${make_path}) \n"
 echo -e "${SUCCESS} All processes completed successfully."
+
+
+# sudo ./renas -b "elfboard-elf2" -r "liyi4x/fnnas" -k "6.18.y" -a "true" -s "" -e "16" -n "liyi4x"
+
