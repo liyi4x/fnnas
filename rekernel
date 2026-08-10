@@ -228,17 +228,17 @@ download_dtbs() {
     # Get the latest version from github releases(e.g: 6.18.33)
     latest_version="$(
         curl -fsSL \
-            https://github.com/ophub/kernel/releases/expanded_assets/kernel_stable |
+            https://github.com/liyi4x/kernel/releases/expanded_assets/kernel_stable |
             grep -oP "${kernel_verpatch}\.[0-9]+(?=\.tar\.gz)" |
             sort -urV | head -n 1
     )"
-    [[ -n "${latest_version}" ]] || error_msg "Failed to query kernel DTB version from [ https://github.com/ophub/kernel ]."
+    [[ -n "${latest_version}" ]] || error_msg "Failed to query kernel DTB version from [ https://github.com/liyi4x/kernel ]."
     echo -e "${INFO} Latest kernel DTB version: [ ${latest_version} ]"
 
     # Set the dtbs download path
     tmp_dtbs_path="$(mktemp -d)"
     mkdir -p "${tmp_dtbs_path}"/{allwinner,amlogic,rockchip}
-    dtbs_down_from="https://github.com/ophub/kernel/releases/download/kernel_stable/${latest_version}.tar.gz"
+    dtbs_down_from="https://github.com/liyi4x/kernel/releases/download/kernel_stable/${latest_version}.tar.gz"
 
     # Download the kernel DTB files (retry up to 10 times on failure)
     echo -e "${INFO} Downloading kernel DTB files from: [ ${dtbs_down_from} ]"
